@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Input, Select, Button, Card, message, Row, Col, List, Tag } from 'antd';
+import { Form, Input, Select, Button, Card, message, Row, Col, List, Tag, Spin } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { memberAPI, clubAPI, eprAPI } from '../../../services/api';
 
@@ -9,13 +9,20 @@ const { TextArea } = Input;
 const AddMember = () => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
-  const [loading, setLoading] = useState(false);
+  const [submitLoading, setSubmitLoading] = useState(false);
+  const [clubsLoading, setClubsLoading] = useState(false);
+  const [classesLoading, setClassesLoading] = useState(false);
+  const [sectionsLoading, setSectionsLoading] = useState(false);
+  const [studentsLoading, setStudentsLoading] = useState(false);
   const [clubs, setClubs] = useState([]);
   const [classes, setClasses] = useState([]);
-  const [sections, setSections] = useState([]);
-  const [students, setStudents] = useState([]);
+  const [allSections, setAllSections] = useState([]);
+  const [allStudents, setAllStudents] = useState([]);
+  const [filteredSections, setFilteredSections] = useState([]);
+  const [filteredStudents, setFilteredStudents] = useState([]);
   const [selectedStudents, setSelectedStudents] = useState([]);
-  const [availableStudents, setAvailableStudents] = useState([]);
+  const [selectedClass, setSelectedClass] = useState(null);
+  const [selectedSection, setSelectedSection] = useState(null);
 
   useEffect(() => {
     fetchInitialData();
@@ -23,66 +30,88 @@ const AddMember = () => {
 
   const fetchInitialData = async () => {
     try {
-      const [clubsRes, classesRes, sectionsRes, studentsRes] = await Promise.all([
+      setClubsLoading(true);
+      setClassesLoading(true);
+      setSectionsLoading(true);
+      
+      const [clubsRes, classesRes, sectionsRes] = await Promise.all([
         clubAPI.getClubs(),
         eprAPI.getClasses(),
-        eprAPI.getSections(),
-        eprAPI.getStudents()
+        eprAPI.getSections()
       ]);
       
-      setClubs(clubsRes?.data?.data);
-      setClasses(classesRes?.data?.message);
-      setSections(sectionsRes?.data?.message);
-      setStudents(studentsRes?.data?.message);
+      setClubs(clubsRes?.data?.data || []);
+      setClasses(classesRes?.data?.message || []);
+      setAllSections(sectionsRes?.data?.message || []);
     } catch (error) {
       message.error('Failed to fetch initial data');
+    } finally {
+      setClubsLoading(false);
+      setClassesLoading(false);
+      setSectionsLoading(false);
     }
   };
 
+  const fetchStudents = async () => {
+    try {
+      setStudentsLoading(true);
+      const studentsRes = await eprAPI.getStudents();
+      setAllStudents(studentsRes?.data?.message || []);
+      
+      // Filter students based on selected class and section
+      const filtered = studentsRes?.data?.message.filter(
+        student => student.Class === selectedClass && student.section === selectedSection
+      );
+      setFilteredStudents(filtered || []);
+    } catch (error) {
+      message.error('Failed to fetch students data');
+    } finally {
+      setStudentsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (selectedClass) {
+      // Filter sections based on selected class
+      const classSections = allSections.filter(
+        section => section.class_name === selectedClass
+      );
+      setFilteredSections(classSections);
+      
+      // Reset section selection when class changes
+      setSelectedSection(null);
+      form.setFieldsValue({ section: undefined });
+      setFilteredStudents([]);
+    } else {
+      setFilteredSections([]);
+    }
+  }, [selectedClass, allSections, form]);
+
+  useEffect(() => {
+    if (selectedClass && selectedSection) {
+      fetchStudents();
+    } else {
+      setFilteredStudents([]);
+    }
+  }, [selectedClass, selectedSection]);
+
   const handleClassChange = (value) => {
-    form.setFieldsValue({ section: undefined });
-    filterAvailableStudents();
+    setSelectedClass(value);
   };
 
   const handleSectionChange = (value) => {
-    filterAvailableStudents();
+    setSelectedSection(value);
   };
 
-  const handleClubChange = async (clubId) => {
-    if (!clubId) return;
-    
-    try {
-      // Filter students based on selected club eligibility
-      filterAvailableStudents();
-    } catch (error) {
-      message.error('Failed to check student eligibility');
-    }
-  };
-
-  const filterAvailableStudents = () => {
-    const formValues = form.getFieldsValue();
-    const { class_std, section, club } = formValues;
-
-    if (!class_std || !section) {
-      setAvailableStudents([]);
-      return;
-    }
-
-    const filtered = students.filter(student => 
-      student.Class === class_std && 
-      student.section === section
-    );
-
-    setAvailableStudents(filtered);
-  };
-
-  const handleStudentSelect = (studentId) => {
-    const student = students.find(s => s.student_id === studentId);
-    if (student && !selectedStudents.find(s => s.student_id === studentId)) {
+  const handleStudentSelect = (value) => {
+    const student = allStudents.find(s => s.student_id === value);
+    if (student && !selectedStudents.find(s => s.student_id === value)) {
       setSelectedStudents(prev => [...prev, {
         student_id: student.student_id,
         student_name: `${student.student_first_name} ${student.student_last_name}`,
-        gender: student.gender.toLowerCase()
+        gender: student.gender.toLowerCase(),
+        class: selectedClass,
+        section: selectedSection
       }]);
     }
   };
@@ -97,21 +126,45 @@ const AddMember = () => {
       return;
     }
 
-    setLoading(true);
+    setSubmitLoading(true);
     try {
+      // Find the club object to get the _id
+      const selectedClub = clubs.find(club => club.name === values.club);
+      
+      if (!selectedClub) {
+        message.error('Selected club not found');
+        return;
+      }
+
+      // Prepare the payload according to API requirements
       const payload = {
-        ...values,
-        students: selectedStudents
+        club: selectedClub._id, // Send the _id instead of name
+        class_std: values.class_std,
+        section: values.section,
+        students: selectedStudents.map(student => ({
+          student_id: student.student_id,
+          student_name: student.student_name,
+          gender: student.gender
+        }))
       };
 
-      await memberAPI.createMember(payload);
+      console.log('Submitting payload:', payload);
+      
+      const response = await memberAPI.createMember(payload);
+      console.log('API response:', response);
+      
       message.success('Member record created successfully');
-      navigate('/members');
+      navigate('/admin/member');
     } catch (error) {
+      console.error('API error:', error);
       message.error(error.response?.data?.message || 'Failed to create member record');
     } finally {
-      setLoading(false);
+      setSubmitLoading(false);
     }
+  };
+
+  const filterOption = (input, option) => {
+    return option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
   };
 
   return (
@@ -131,24 +184,19 @@ const AddMember = () => {
             >
               <Select
                 placeholder="Select Club"
-                onChange={handleClubChange}
                 allowClear
+                showSearch
+                loading={clubsLoading}
+                disabled={clubsLoading || submitLoading}
+                filterOption={filterOption}
+                notFoundContent={clubsLoading ? <Spin size="small" /> : "No clubs found"}
               >
                 {clubs.map(club => (
-                  <Option key={club._id} value={club._id}>
+                  <Option key={club._id} value={club.name}>
                     {club.name}
                   </Option>
                 ))}
               </Select>
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item
-              name="club_name"
-              label="Club Name (Display)"
-              rules={[{ required: true, message: 'Please enter club name' }]}
-            >
-              <Input placeholder="Enter club display name" />
             </Form.Item>
           </Col>
         </Row>
@@ -162,11 +210,16 @@ const AddMember = () => {
             >
               <Select
                 placeholder="Select Class"
-                onChange={handleClassChange}
                 allowClear
+                showSearch
+                loading={classesLoading}
+                disabled={classesLoading || submitLoading}
+                filterOption={filterOption}
+                onChange={handleClassChange}
+                notFoundContent={classesLoading ? <Spin size="small" /> : "No classes found"}
               >
                 {classes.map(cls => (
-                  <Option key={cls.class_name} value={cls.class_name}>
+                  <Option key={cls.id} value={cls.class_name}>
                     {cls.class_name}
                   </Option>
                 ))}
@@ -181,11 +234,22 @@ const AddMember = () => {
             >
               <Select
                 placeholder="Select Section"
-                onChange={handleSectionChange}
                 allowClear
+                showSearch
+                loading={sectionsLoading}
+                disabled={sectionsLoading || submitLoading || !selectedClass}
+                filterOption={filterOption}
+                onChange={handleSectionChange}
+                notFoundContent={
+                  !selectedClass 
+                    ? "Please select a class first" 
+                    : sectionsLoading 
+                      ? <Spin size="small" /> 
+                      : "No sections found for this class"
+                }
               >
-                {sections.map(sec => (
-                  <Option key={sec.section_name} value={sec.section_name}>
+                {filteredSections.map(sec => (
+                  <Option key={sec.id} value={sec.section_name}>
                     {sec.section_name}
                   </Option>
                 ))}
@@ -194,19 +258,29 @@ const AddMember = () => {
           </Col>
         </Row>
 
-        <Form.Item label="Add Students">
-          <Select
-            placeholder="Select students to add"
-            onSelect={handleStudentSelect}
-            allowClear
-          >
-            {availableStudents.map(student => (
-              <Option key={student.student_id} value={student.student_id}>
-                {`${student.student_id} - ${student.student_first_name} ${student.student_last_name} (${student.gender})`}
-              </Option>
-            ))}
-          </Select>
-        </Form.Item>
+        {selectedClass && selectedSection && (
+          <Form.Item label="Add Students">
+            <Select
+              placeholder="Select students to add"
+              onSelect={handleStudentSelect}
+              allowClear
+              showSearch
+              loading={studentsLoading}
+              disabled={studentsLoading || submitLoading}
+              filterOption={filterOption}
+              notFoundContent={studentsLoading ? <Spin size="small" /> : "No students found"}
+            >
+              {filteredStudents.map(student => (
+                <Option key={student.student_id} value={student.student_id}>
+                  {`${student.student_id} - ${student.student_first_name} ${student.student_last_name} (${student.gender})`}
+                </Option>
+              ))}
+            </Select>
+            <div style={{ marginTop: 8, fontSize: 12, color: '#888' }}>
+              Showing {filteredStudents.length} students in {selectedClass}-{selectedSection}
+            </div>
+          </Form.Item>
+        )}
 
         {selectedStudents.length > 0 && (
           <Form.Item label="Selected Students">
@@ -220,6 +294,7 @@ const AddMember = () => {
                       type="link"
                       danger
                       onClick={() => removeStudent(student.student_id)}
+                      disabled={submitLoading}
                     >
                       Remove
                     </Button>
@@ -228,9 +303,12 @@ const AddMember = () => {
                   <List.Item.Meta
                     title={`${student.student_name} (${student.student_id})`}
                     description={
-                      <Tag color={student.gender === 'male' ? 'blue' : 'pink'}>
-                        {student.gender}
-                      </Tag>
+                      <div>
+                        <Tag color={student.gender === 'male' ? 'blue' : 'pink'}>
+                          {student.gender}
+                        </Tag>
+                        <Tag color="green">{student.class}-{student.section}</Tag>
+                      </div>
                     }
                   />
                 </List.Item>
@@ -240,10 +318,14 @@ const AddMember = () => {
         )}
 
         <Form.Item>
-          <Button type="primary" htmlType="submit" loading={loading}>
+          <Button type="primary" htmlType="submit" loading={submitLoading}>
             Create Member Record
           </Button>
-          <Button onClick={() => navigate('/members')} style={{ marginLeft: 8 }}>
+          <Button 
+            onClick={() => navigate('/admin/member')} 
+            style={{ marginLeft: 8 }}
+            disabled={submitLoading}
+          >
             Cancel
           </Button>
         </Form.Item>

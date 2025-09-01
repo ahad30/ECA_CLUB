@@ -54,8 +54,8 @@ export const memberAPI = {
 
 // EPR API methods (external)
 export const eprAPI = {
-  getClasses: () => eprApi.post('/getClass'),
-  getSections: () => eprApi.post('/getSection'),
+  getClasses: () => eprApi.post('/getClass' , {session: '2025-2026'}),
+  getSections: () => eprApi.post('/getSection' , {session: '2025-2026'}),
   getStudents: () => eprApi.post('/fetchAdmittedStudents', {session: '2025-2026'})
 };
 

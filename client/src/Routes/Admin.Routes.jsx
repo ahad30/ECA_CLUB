@@ -4,6 +4,7 @@ import Club from "../Pages/Dashboard/Club/Club";
 import Member from "../Pages/Dashboard/Members/Member";
 import AddMember from "../Pages/Dashboard/Members/AddMember";
 import EditMember from "../Pages/Dashboard/Members/EditMember";
+import ViewMember from "../Pages/Dashboard/Members/ViewMember";
 
 
 
@@ -28,5 +29,9 @@ export const adminRoutes = [
   {
     path: "members/edit-member/:id",
     element: <EditMember />,
+  },
+  {
+    path: "members/view-member/:id",
+    element: <ViewMember />,
   },
 ];

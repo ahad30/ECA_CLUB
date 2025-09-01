@@ -23,6 +23,7 @@ const Member = () => {
 
   useEffect(() => {
     fetchInitialData();
+    fetchMembers();
   }, []);
 
   useEffect(() => {
@@ -37,10 +38,9 @@ const Member = () => {
         eprAPI.getSections()
       ]);
       
-      setClubs(clubsRes?.data?.data);
-      setClasses(classesRes?.data?.message);
-      setSections(sectionsRes?.data?.message);
-      console.log(sectionsRes?.data?.message);
+      setClubs(clubsRes?.data?.data || []);
+      setClasses(classesRes?.data?.message || []);
+      setSections(sectionsRes?.data?.message || []);
     } catch (error) {
       message.error('Failed to fetch initial data');
     }
@@ -50,12 +50,20 @@ const Member = () => {
     setLoading(true);
     try {
       const params = {};
-      if (filters.club) params.club = filters.club;
+      
+      // Use club ID for filtering instead of name
+      if (filters.club) {
+        const selectedClub = clubs.find(club => club._id === filters.club);
+        if (selectedClub) {
+          params.club = selectedClub._id;
+        }
+      }
+      
       if (filters.class_std) params.class_std = filters.class_std;
       if (filters.section) params.section = filters.section;
 
       const response = await memberAPI.getMembers(params);
-      setMembers(response.data.data);
+      setMembers(response.data.data || []);
 
       // Fetch stats if club filter is applied
       if (filters.club) {
@@ -65,6 +73,7 @@ const Member = () => {
         setStats(null);
       }
     } catch (error) {
+      console.error('Failed to fetch members:', error);
       message.error('Failed to fetch members');
     } finally {
       setLoading(false);
@@ -92,27 +101,28 @@ const Member = () => {
   const columns = [
     {
       title: 'Club Name',
-      dataIndex: 'club_name',
-      key: 'club_name',
-      sorter: (a, b) => a.club_name.localeCompare(b.club_name),
+      dataIndex: ['club', 'name'],
+      key: 'clubName',
+      // sorter: (a, b) => (a.club?.name || '').localeCompare(b.club?.name || ''),
+      render: (text, record) => record.club?.name || 'N/A'
     },
     {
       title: 'Class',
       dataIndex: 'class_std',
       key: 'class_std',
-      sorter: (a, b) => a.class_std.localeCompare(b.class_std),
+      // sorter: (a, b) => a.class_std.localeCompare(b.class_std),
     },
     {
       title: 'Section',
       dataIndex: 'section',
       key: 'section',
-      sorter: (a, b) => a.section.localeCompare(b.section),
+      // sorter: (a, b) => a.section.localeCompare(b.section),
     },
     {
       title: 'Total Students',
       key: 'total_students',
       render: (record) => record.students.length,
-      sorter: (a, b) => a.students.length - b.students.length,
+      // sorter: (a, b) => a.students.length - b.students.length,
     },
     {
       title: 'Male Students',
@@ -132,19 +142,19 @@ const Member = () => {
           <Button
             type="link"
             icon={<EyeOutlined />}
-            onClick={() => navigate(`/members/${record._id}`)}
+            onClick={() => navigate(`/admin/members/view-member/${record._id}`)}
             style={{ padding: 0 }}
           >
             View
           </Button>
-          <Button
+          {/* <Button
             type="link"
             icon={<EditOutlined />}
-            onClick={() => navigate(`/members/edit/${record._id}`)}
+            onClick={() => navigate(`/admin/members/edit-member/${record._id}`)}
             style={{ padding: 0 }}
           >
             Edit
-          </Button>
+          </Button> */}
           <Popconfirm
             title="Delete Member Record"
             description="Are you sure you want to delete this member record?"
@@ -166,6 +176,10 @@ const Member = () => {
     },
   ];
 
+  const filterOption = (input, option) => {
+    return option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+  };
+
   return (
     <div>
       <Card title="Member Management" style={{ marginBottom: 16 }}>
@@ -173,10 +187,13 @@ const Member = () => {
           <Col span={8}>
             <Select
               placeholder="Filter by Club"
-              value={filters.club}
+              value={filters.club || undefined}
               onChange={(value) => handleFilterChange('club', value)}
               style={{ width: '100%' }}
               allowClear
+              showSearch
+              filterOption={filterOption}
+              loading={loading}
             >
               {clubs.map(club => (
                 <Option key={club._id} value={club._id}>
@@ -188,13 +205,16 @@ const Member = () => {
           <Col span={8}>
             <Select
               placeholder="Filter by Class"
-              value={filters.class_std}
+              value={filters.class_std || undefined}
               onChange={(value) => handleFilterChange('class_std', value)}
               style={{ width: '100%' }}
               allowClear
+              showSearch
+              filterOption={filterOption}
+              loading={loading}
             >
               {classes.map(cls => (
-                <Option key={cls.class_name} value={cls.class_name}>
+                <Option key={cls.id} value={cls.class_name}>
                   {cls.class_name}
                 </Option>
               ))}
@@ -203,13 +223,16 @@ const Member = () => {
           <Col span={8}>
             <Select
               placeholder="Filter by Section"
-              value={filters.section}
+              value={filters.section || undefined}
               onChange={(value) => handleFilterChange('section', value)}
               style={{ width: '100%' }}
               allowClear
+              showSearch
+              filterOption={filterOption}
+              loading={loading}
             >
               {sections.map(sec => (
-                <Option key={sec.section_name} value={sec.section_name}>
+                <Option key={sec.id} value={sec.section_name}>
                   {sec.section_name}
                 </Option>
               ))}
@@ -217,7 +240,8 @@ const Member = () => {
           </Col>
         </Row>
 
-        <Button
+      <div className='flex justify-end'>
+          <Button
           type="primary"
           icon={<PlusOutlined />}
           onClick={() => navigate('/admin/members/add-member')}
@@ -231,6 +255,7 @@ const Member = () => {
             Clear Filters
           </Button>
         )}
+      </div>
       </Card>
 
       {stats && (
