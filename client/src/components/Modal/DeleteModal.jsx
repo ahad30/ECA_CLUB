@@ -1,7 +1,7 @@
 import { FaTrash } from "react-icons/fa"
 
 const DeleteModal = ({
-  showModal, 
+  // showModal, 
   setShowModal,
   handleDelete,
   comment,

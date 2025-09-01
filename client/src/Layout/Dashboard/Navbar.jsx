@@ -16,7 +16,7 @@ const Navbar = ({
   };
 
   return (
-    <nav className="bg-blue-600 text-white p-4 shadow-md">
+    <nav className="bg-[#121C34] text-white p-4 shadow-md">
       <div className="container mx-auto flex justify-between items-center">
         <div>
             {isSidebarOpen === false && (

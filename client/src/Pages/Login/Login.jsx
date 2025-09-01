@@ -24,7 +24,7 @@ const Login = () => {
     const result = await login(formData);
     if (result?.success) {
       toast.success("Login Successful");
-      navigate('/');
+      navigate('/admin/club');
     }
   };
 

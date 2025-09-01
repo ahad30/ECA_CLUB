@@ -1,11 +1,9 @@
-import React from "react";
 import { Table} from "antd";
-import Skeleton from "../Skeleton/Skeleton";
-
+import Skeleton from "../../Skeleton/Skeleton";
 
 const DashboardTable = ({columns, data, loading }) => {
   if (loading ) {
-    return <Skeleton></Skeleton>;
+    return <Skeleton/>;
   }
  return (
 
