@@ -261,6 +261,7 @@ const AddMember = () => {
         {selectedClass && selectedSection && (
           <Form.Item label="Add Students">
             <Select
+              mode='multiple'
               placeholder="Select students to add"
               onSelect={handleStudentSelect}
               allowClear

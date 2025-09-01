@@ -1,5 +1,5 @@
 import { MdOutlineDashboardCustomize } from "react-icons/md";
-import { TfiLayoutSlider } from "react-icons/tfi";
+import { GrUserManager } from "react-icons/gr";
 import Club from "../Pages/Dashboard/Club/Club";
 import Member from "../Pages/Dashboard/Members/Member";
 import AddMember from "../Pages/Dashboard/Members/AddMember";
@@ -19,7 +19,7 @@ export const adminRoutes = [
     path: "member",
     label: "Member Management",
     element: <Member />,
-    icon: <MdOutlineDashboardCustomize size={20}></MdOutlineDashboardCustomize>,
+    icon: <GrUserManager size={20}></GrUserManager>,
   },
   {
     path: "members/add-member",
