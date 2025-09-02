@@ -5,10 +5,10 @@ import { toast } from 'sonner';
 
 const Login = () => {
   const [formData, setFormData] = useState({
-    email: '',
-    password: ''
+    email: 'admin@gmail.com',
+    password: '123456'
   });
-  const { login, error, setError } = useAuth();
+  const { login, error, setError , loading} = useAuth();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -78,7 +78,7 @@ const Login = () => {
               type="submit"
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
-              Sign in
+              {loading ? 'Loading...' : 'Sign in'}
             </button>
           </div>
           
