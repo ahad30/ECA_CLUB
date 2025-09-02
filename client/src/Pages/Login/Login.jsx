@@ -5,8 +5,8 @@ import { toast } from 'sonner';
 
 const Login = () => {
   const [formData, setFormData] = useState({
-    email: 'ahad@gmail.com',
-    password: '123456'
+    email: '',
+    password: ''
   });
   const { login, error, setError } = useAuth();
   const navigate = useNavigate();
