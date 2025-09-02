@@ -2,14 +2,17 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { toast } from 'sonner';
+import {  Button, Spin } from 'antd';
+
 
 const Login = () => {
   const [formData, setFormData] = useState({
     email: 'admin@gmail.com',
     password: '123456'
   });
-  const { login, error, setError , loading} = useAuth();
+  const { login, error, setError } = useAuth();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -21,7 +24,9 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     const result = await login(formData);
+    setLoading(false);
     if (result?.success) {
        navigate('/admin/club');
       toast.success("Login Successful");
@@ -73,13 +78,14 @@ const Login = () => {
             </div>
           </div>
 
-          <div>
-            <button
-              type="submit"
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          <div className='flex justify-end'>
+            <Button
+             htmlType="submit"
+             type='primary'
+             loading={loading}
             >
-              {loading ? 'Loading...' : 'Sign in'}
-            </button>
+             Sign In
+            </Button>
           </div>
           
           <div className="text-center">
