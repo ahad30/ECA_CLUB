@@ -175,7 +175,7 @@ const Member = () => {
           >
             Edit
           </Button> */}
-          <Popconfirm
+          {/* <Popconfirm
             title="Delete Member Record"
             description="Are you sure you want to delete this member record?"
             onConfirm={() => handleDeleteMember(record._id)}
@@ -190,7 +190,7 @@ const Member = () => {
             >
               Delete
             </Button>
-          </Popconfirm>
+          </Popconfirm> */}
         </Space>
       ),
     },
