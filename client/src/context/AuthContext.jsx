@@ -36,14 +36,11 @@ export const AuthProvider = ({ children }) => {
 const register = async (formData) => {
   try {
     setError('');
-    setLoading(true)
     const res = await api.post('/auth/register', formData);
     const { token, ...userData } = res.data;
     localStorage.setItem('token', token);
     setUser(userData);
-    setLoading(false);
     return { success: true };
-    
   } catch (error) {
     console.log(error);
 
@@ -62,12 +59,10 @@ const register = async (formData) => {
 const login = async (formData) => {
   try {
     setError('');
-    setLoading(true);
     const res = await api.post('/auth/login', formData);
     const { token, ...userData } = res.data;
     localStorage.setItem('token', token);
     setUser(userData);
-    setLoading(false);
     return { success: true };
   } catch (error) {
     console.log(error);
