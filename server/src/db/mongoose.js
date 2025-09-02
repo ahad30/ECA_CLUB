@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 mongoose.connect(process.env.MONGODB_URL, {
-  bufferCommands: false,
+  bufferCommands: true,
   serverSelectionTimeoutMS: 5000,
   socketTimeoutMS: 45000,
   useUnifiedTopology: true,
