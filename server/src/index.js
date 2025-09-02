@@ -1,8 +1,21 @@
+const connectDB = require('./db/mongoose');
 require('dotenv').config(); 
 
-const {server , app} = require('./app');
-const port = process.env.PORT || 5000;
+const {  app } = require('./app');
 
-app.listen(port, () => {
-  console.log('Server is up on port ' + port);
-});          
+// Wrap the async code in an async function
+async function startServer() {
+  try {
+    await connectDB();
+    const port = process.env.PORT || 5000;
+    
+    app.listen(port, () => {
+      console.log('Server is up on port ' + port);
+    });
+  } catch (error) {
+    console.error('Failed to start server:', error);
+    process.exit(1);
+  }
+}
+
+startServer();
