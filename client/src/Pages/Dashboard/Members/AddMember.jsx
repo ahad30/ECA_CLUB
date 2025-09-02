@@ -171,16 +171,17 @@ const AddMember = () => {
   };
 
   return (
-    <section className=''>
+ 
           <Card title="Add Member Record">
-      <Form
+          <div className='w-full lg:max-w-5xl mx-auto'>
+              <Form
         form={form}
         layout="vertical"
         onFinish={handleSubmit}
         style={{ maxWidth: 800 }}
       >
         <Row gutter={16}>
-          <Col span={12}>
+          <Col span={24} >
             <Form.Item
               name="club"
               label="Club"
@@ -323,7 +324,7 @@ const AddMember = () => {
         )}
 
         <Form.Item>
-          <Button type="primary" htmlType="submit" loading={submitLoading}>
+          <Button  style={{ marginBottom: 8 }} type="primary" htmlType="submit" loading={submitLoading}>
             Create Member Record
           </Button>
           <Button 
@@ -335,8 +336,9 @@ const AddMember = () => {
           </Button>
         </Form.Item>
       </Form>
+          </div>
     </Card>
-    </section>
+
   );
 };
 

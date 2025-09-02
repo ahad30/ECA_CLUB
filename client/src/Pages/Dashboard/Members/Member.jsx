@@ -21,7 +21,6 @@ const Member = () => {
     section: ''
   });
   const [filteredSections, setFilteredSections] = useState([]);
-  const [selectedClass, setSelectedClass] = useState(null);
 
   useEffect(() => {
     fetchInitialData();
@@ -176,7 +175,7 @@ const Member = () => {
           >
             Edit
           </Button> */}
-          <Popconfirm
+          {/* <Popconfirm
             title="Delete Member Record"
             description="Are you sure you want to delete this member record?"
             onConfirm={() => handleDeleteMember(record._id)}
@@ -191,7 +190,7 @@ const Member = () => {
             >
               Delete
             </Button>
-          </Popconfirm>
+          </Popconfirm> */}
         </Space>
       ),
     },
@@ -202,115 +201,138 @@ const Member = () => {
   };
 
   return (
-    <div>
-      <Card title="Member Management" style={{ marginBottom: 16 }}>
-        <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
-          <Col span={8}>
-            <Select
-              placeholder="Filter by Club"
-              value={filters.club || undefined}
-              onChange={(value) => handleFilterChange('club', value)}
-              style={{ width: '100%' }}
-              allowClear
-              showSearch
-              filterOption={filterOption}
-              loading={loading}
-            >
-              {clubs.map(club => (
-                <Option key={club._id} value={club._id}>
-                  {club.name}
-                </Option>
-              ))}
-            </Select>
-          </Col>
-          <Col span={8}>
-            <Select
-              placeholder="Filter by Class"
-              value={filters.class_std || undefined}
-              onChange={(value) => handleFilterChange('class_std', value)}
-              style={{ width: '100%' }}
-              allowClear
-              showSearch
-              filterOption={filterOption}
-              loading={loading}
-            >
-              {classes.map(cls => (
-                <Option key={cls.id} value={cls.class_name}>
-                  {cls.class_name}
-                </Option>
-              ))}
-            </Select>
-          </Col>
-          <Col span={8}>
-            <Select
-              placeholder="Filter by Section"
-              value={filters.section || undefined}
-              onChange={(value) => handleFilterChange('section', value)}
-              style={{ width: '100%' }}
-              allowClear
-              showSearch
-              filterOption={filterOption}
-              loading={loading}
-              disabled={!filters.class_std}
-            >
-              {filteredSections.map(sec => (
-                <Option key={sec.id} value={sec.section_name}>
-                  {sec.section_name}
-                </Option>
-              ))}
-            </Select>
-          </Col>
-        </Row>
+<div>
+  <Card title="Member Management" style={{ marginBottom: 16 }}>
+    {/* Responsive filter row */}
+    <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
+      <Col xs={24} sm={12} md={8} lg={8}>
+        <Select
+          placeholder="Filter by Club"
+          value={filters.club || undefined}
+          onChange={(value) => handleFilterChange('club', value)}
+          style={{ width: '100%' }}
+          allowClear
+          showSearch
+          filterOption={filterOption}
+          loading={loading}
+        >
+          {clubs.map(club => (
+            <Option key={club._id} value={club._id}>
+              {club.name}
+            </Option>
+          ))}
+        </Select>
+      </Col>
+      <Col xs={24} sm={12} md={8} lg={8}>
+        <Select
+          placeholder="Filter by Class"
+          value={filters.class_std || undefined}
+          onChange={(value) => handleFilterChange('class_std', value)}
+          style={{ width: '100%' }}
+          allowClear
+          showSearch
+          filterOption={filterOption}
+          loading={loading}
+        >
+          {classes.map(cls => (
+            <Option key={cls.id} value={cls.class_name}>
+              {cls.class_name}
+            </Option>
+          ))}
+        </Select>
+      </Col>
+      <Col xs={24} sm={12} md={8} lg={8}>
+        <Select
+          placeholder="Filter by Section"
+          value={filters.section || undefined}
+          onChange={(value) => handleFilterChange('section', value)}
+          style={{ width: '100%' }}
+          allowClear
+          showSearch
+          filterOption={filterOption}
+          loading={loading}
+          disabled={!filters.class_std}
+        >
+          {filteredSections.map(sec => (
+            <Option key={sec.id} value={sec.section_name}>
+              {sec.section_name}
+            </Option>
+          ))}
+        </Select>
+      </Col>
+    </Row>
 
-        <div className='flex justify-end'>
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            onClick={() => navigate('/admin/members/add-member')}
-            style={{ marginBottom: 16 }}
-          >
-            Add Member Record
-          </Button>
+    {/* Responsive button group */}
+    <div className='flex flex-col sm:flex-row justify-end gap-2'>
+      <Button
+        type="primary"
+        icon={<PlusOutlined />}
+        onClick={() => navigate('/admin/members/add-member')}
+        style={{ marginBottom: 8 }}
+        className="sm:mb-0"
+      >
+        Add Member Record
+      </Button>
 
-          {(filters.club || filters.class_std || filters.section) && (
-            <Button onClick={clearFilters} style={{ marginLeft: 8 }}>
-              Clear Filters
-            </Button>
-          )}
-        </div>
-      </Card>
-
-      {stats && (
-        <Row gutter={16} style={{ marginBottom: 16 }}>
-          <Col span={6}>
-            <Card>
-              <Statistic title="Total Students" value={stats.total_students} />
-            </Card>
-          </Col>
-          <Col span={6}>
-            <Card>
-              <Statistic title="Male Students" value={stats.total_male} />
-            </Card>
-          </Col>
-          <Col span={6}>
-            <Card>
-              <Statistic title="Female Students" value={stats.total_female} />
-            </Card>
-          </Col>
-          <Col span={6}>
-            <Card>
-              <Statistic title="Members Records" value={stats.total_members} />
-            </Card>
-          </Col>
-        </Row>
+      {(filters.club || filters.class_std || filters.section) && (
+        <Button 
+          onClick={clearFilters} 
+          style={{ marginLeft: 0 }}
+          className="sm:ml-2"
+        >
+          Clear Filters
+        </Button>
       )}
-
-      <DashboardTable
-        columns={columns}
-        data={members.map(member => ({ ...member, key: member._id }))}
-        loading={loading}
-      />
     </div>
+  </Card>
+
+  {stats && (
+    <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
+      <Col xs={12} sm={12} md={6} lg={6}>
+        <Card size="small">
+          <Statistic 
+            title="Total Students" 
+            value={stats.total_students} 
+            valueStyle={{ fontSize: '18px' }}
+          />
+        </Card>
+      </Col>
+      <Col xs={12} sm={12} md={6} lg={6}>
+        <Card size="small">
+          <Statistic 
+            title="Male Students" 
+            value={stats.total_male} 
+            valueStyle={{ fontSize: '18px' }}
+          />
+        </Card>
+      </Col>
+      <Col xs={12} sm={12} md={6} lg={6}>
+        <Card size="small">
+          <Statistic 
+            title="Female Students" 
+            value={stats.total_female} 
+            valueStyle={{ fontSize: '18px' }}
+          />
+        </Card>
+      </Col>
+      <Col xs={12} sm={12} md={6} lg={6}>
+        <Card size="small">
+          <Statistic 
+            title="Members Records" 
+            value={stats.total_members} 
+            valueStyle={{ fontSize: '18px' }}
+          />
+        </Card>
+      </Col>
+    </Row>
+  )}
+
+  <DashboardTable
+    columns={columns}
+    data={members.map(member => ({ ...member, key: member._id }))}
+    loading={loading}
+  />
+</div>
   );
 };
 
