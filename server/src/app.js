@@ -19,7 +19,7 @@
   // Middleware
   app.use(
     cors({
-      origin: ['http://localhost:5173' , 'http://localhost:5174'],
+      origin: ['http://localhost:5173' , 'http://localhost:5174' , 'https://eca-club.vercel.app'],
       credentials: true,
       optionSuccessStatus: 200,
       methods: ['GET', 'POST', 'PUT', 'DELETE'],
