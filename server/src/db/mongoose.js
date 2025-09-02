@@ -12,4 +12,4 @@ const connectDatabase = async () => {
   }
 };
 
-connectDatabase();
+connectDatabase();        
