@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button, message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
-
+import { toast } from 'sonner';
 import { clubAPI } from '../../../services/api';
 import ReusableModal from '../../../components/Modal/Modal';
 
@@ -18,7 +18,7 @@ const AddClub = ({ onClubAdded }) => {
       message.success('Club created successfully!');
       setVisible(false);
     } catch (error) {
-      message.error(error.response?.data?.message || 'Failed to create club');
+      toast.error(error.response?.data?.message || 'Failed to create club');
       throw error;
     } finally {
       setLoading(false);

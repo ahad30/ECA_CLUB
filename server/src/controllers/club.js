@@ -1,6 +1,5 @@
 const Club = require('../models/club');
 
-
 const getClubs = async (req, res) => {
   try {
     const clubs = await Club.find().sort({ name: 1 });
@@ -17,7 +16,6 @@ const getClubs = async (req, res) => {
     });
   }
 };
-
 
 const getClub = async (req, res) => {
   try {
@@ -49,7 +47,6 @@ const getClub = async (req, res) => {
   }
 };
 
-
 const createClub = async (req, res) => {
   try {
     const { name } = req.body;
@@ -58,6 +55,18 @@ const createClub = async (req, res) => {
       return res.status(400).json({
         success: false,
         message: 'Club name is required'
+      });
+    }
+
+    // Check if club name already exists (case-insensitive)
+    const existingClub = await Club.findOne({ 
+      name: { $regex: new RegExp(`^${name}$`, 'i') } 
+    });
+
+    if (existingClub) {
+      return res.status(400).json({
+        success: false,
+        message: 'Club name already exists'
       });
     }
 
@@ -83,7 +92,6 @@ const createClub = async (req, res) => {
   }
 };
 
-
 const updateClub = async (req, res) => {
   try {
     const { name } = req.body;
@@ -92,6 +100,19 @@ const updateClub = async (req, res) => {
       return res.status(400).json({
         success: false,
         message: 'Club name is required for update'
+      });
+    }
+
+    // Check if club name already exists (excluding current club)
+    const existingClub = await Club.findOne({
+      name: { $regex: new RegExp(`^${name}$`, 'i') },
+      _id: { $ne: req.params.id }
+    });
+
+    if (existingClub) {
+      return res.status(400).json({
+        success: false,
+        message: 'Club name already exists'
       });
     }
 
@@ -133,7 +154,6 @@ const updateClub = async (req, res) => {
     });
   }
 };
-
 
 const deleteClub = async (req, res) => {
   try {
