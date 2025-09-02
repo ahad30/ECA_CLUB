@@ -20,6 +20,8 @@ const Member = () => {
     class_std: '',
     section: ''
   });
+  const [filteredSections, setFilteredSections] = useState([]);
+  const [selectedClass, setSelectedClass] = useState(null);
 
   useEffect(() => {
     fetchInitialData();
@@ -29,6 +31,18 @@ const Member = () => {
   useEffect(() => {
     fetchMembers();
   }, [filters]);
+
+  useEffect(() => {
+    // Filter sections based on selected class
+    if (filters.class_std) {
+      const classSections = sections.filter(
+        section => section.class_name === filters.class_std
+      );
+      setFilteredSections(classSections);
+    } else {
+      setFilteredSections(sections);
+    }
+  }, [filters.class_std, sections]);
 
   const fetchInitialData = async () => {
     try {
@@ -41,7 +55,9 @@ const Member = () => {
       setClubs(clubsRes?.data?.data || []);
       setClasses(classesRes?.data?.message || []);
       setSections(sectionsRes?.data?.message || []);
+      setFilteredSections(sectionsRes?.data?.message || []);
     } catch (error) {
+      console.log(error)
       message.error('Failed to fetch initial data');
     }
   };
@@ -91,7 +107,12 @@ const Member = () => {
   };
 
   const handleFilterChange = (key, value) => {
-    setFilters(prev => ({ ...prev, [key]: value }));
+    if (key === 'class_std') {
+      // When class changes, reset section filter
+      setFilters(prev => ({ ...prev, [key]: value, section: '' }));
+    } else {
+      setFilters(prev => ({ ...prev, [key]: value }));
+    }
   };
 
   const clearFilters = () => {
@@ -230,8 +251,9 @@ const Member = () => {
               showSearch
               filterOption={filterOption}
               loading={loading}
+              disabled={!filters.class_std}
             >
-              {sections.map(sec => (
+              {filteredSections.map(sec => (
                 <Option key={sec.id} value={sec.section_name}>
                   {sec.section_name}
                 </Option>
@@ -240,22 +262,22 @@ const Member = () => {
           </Col>
         </Row>
 
-      <div className='flex justify-end'>
+        <div className='flex justify-end'>
           <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={() => navigate('/admin/members/add-member')}
-          style={{ marginBottom: 16 }}
-        >
-          Add Member Record
-        </Button>
-
-        {(filters.club || filters.class_std || filters.section) && (
-          <Button onClick={clearFilters} style={{ marginLeft: 8 }}>
-            Clear Filters
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => navigate('/admin/members/add-member')}
+            style={{ marginBottom: 16 }}
+          >
+            Add Member Record
           </Button>
-        )}
-      </div>
+
+          {(filters.club || filters.class_std || filters.section) && (
+            <Button onClick={clearFilters} style={{ marginLeft: 8 }}>
+              Clear Filters
+            </Button>
+          )}
+        </div>
       </Card>
 
       {stats && (

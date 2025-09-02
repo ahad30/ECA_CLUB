@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Form, Input, Select, Button, Card, message, Row, Col, List, Tag, Spin } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { memberAPI, clubAPI, eprAPI } from '../../../services/api';
+import { toast } from 'sonner';
+
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -64,6 +66,7 @@ const AddMember = () => {
       );
       setFilteredStudents(filtered || []);
     } catch (error) {
+      console.log(error)
       message.error('Failed to fetch students data');
     } finally {
       setStudentsLoading(false);
@@ -157,7 +160,7 @@ const AddMember = () => {
       navigate('/admin/member');
     } catch (error) {
       console.error('API error:', error);
-      message.error(error.response?.data?.message || 'Failed to create member record');
+      toast.error(error.response?.data?.message || 'Failed to create member record');
     } finally {
       setSubmitLoading(false);
     }
@@ -168,7 +171,8 @@ const AddMember = () => {
   };
 
   return (
-    <Card title="Add Member Record">
+    <section className=''>
+          <Card title="Add Member Record">
       <Form
         form={form}
         layout="vertical"
@@ -332,6 +336,7 @@ const AddMember = () => {
         </Form.Item>
       </Form>
     </Card>
+    </section>
   );
 };
 
