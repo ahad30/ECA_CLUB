@@ -46,6 +46,7 @@ const AddMember = () => {
       setClasses(classesRes?.data?.message || []);
       setAllSections(sectionsRes?.data?.message || []);
     } catch (error) {
+      console.log(error)
       message.error('Failed to fetch initial data');
     } finally {
       setClubsLoading(false);
