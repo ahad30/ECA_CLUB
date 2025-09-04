@@ -1,10 +1,11 @@
 import React from 'react';
-import { Table, Button, Space, message, Popconfirm } from 'antd';
+import { Table, Button, Space, Popconfirm } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
 import AddClub from './AddClub';
 import EditClub from './EditClub';
 import DashboardTable from '../../../components/Dashboard/Table/DashboardTable';
 import { useClubs, useDeleteClub } from '../../../hooks/useApiData';
+import { toast } from 'sonner';
 
 const Club = () => {
   // React Query hooks for data fetching with automatic caching and refetching
@@ -14,10 +15,10 @@ const Club = () => {
   const handleDeleteClub = async (clubId) => {
     try {
       await deleteClubMutation.mutateAsync(clubId);
-      message.success('Club deleted successfully');
+      toast.success('Club deleted successfully');
       // No need to manually update state - React Query will automatically refetch
     } catch (error) {
-      message.error(error.response?.data?.message || 'Failed to delete club');
+      toast.error(error.response?.data?.message || 'Failed to delete club');
     }
   };
 

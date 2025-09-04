@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Button, message } from 'antd';
+import { Button} from 'antd';
 import { EditOutlined } from '@ant-design/icons'
 import { useUpdateClub } from '../../../hooks/useApiData';
 import ReusableModal from '../../../components/Modal/Modal';
+import { toast } from 'sonner';
 
 const EditClub = ({ club }) => {
   const [visible, setVisible] = useState(false);
@@ -13,10 +14,10 @@ const EditClub = ({ club }) => {
     setLoading(true);
     try {
       await updateClubMutation.mutateAsync({ id: club._id, data: values });
-      message.success('Club updated successfully!');
+      toast.success('Club updated successfully!');
       setVisible(false);
     } catch (error) {
-      message.error(error.response?.data?.message || 'Failed to update club');
+      toast.error(error.response?.data?.message || 'Failed to update club');
       throw error;
     }
     finally {
