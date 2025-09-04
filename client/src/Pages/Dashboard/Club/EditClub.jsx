@@ -6,9 +6,11 @@ import ReusableModal from '../../../components/Modal/Modal';
 
 const EditClub = ({ club }) => {
   const [visible, setVisible] = useState(false);
+    const [loading, setLoading] = useState(false);
   const updateClubMutation = useUpdateClub();
 
   const handleUpdateClub = async (values) => {
+    setLoading(true);
     try {
       await updateClubMutation.mutateAsync({ id: club._id, data: values });
       message.success('Club updated successfully!');
@@ -16,6 +18,9 @@ const EditClub = ({ club }) => {
     } catch (error) {
       message.error(error.response?.data?.message || 'Failed to update club');
       throw error;
+    }
+    finally {
+      setLoading(false);
     }
   };
 
@@ -36,7 +41,7 @@ const EditClub = ({ club }) => {
         onFinish={handleUpdateClub}
         title="Edit Club"
         initialValues={{ name: club.name }}
-        loading={updateClubMutation.isLoading}
+        loading={updateClubMutation.isLoading || loading}
         isEdit={true}
       />
     </>

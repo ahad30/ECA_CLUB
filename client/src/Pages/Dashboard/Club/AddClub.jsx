@@ -7,9 +7,11 @@ import ReusableModal from '../../../components/Modal/Modal';
 
 const AddClub = () => {
   const [visible, setVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
   const createClubMutation = useCreateClub();
 
   const handleCreateClub = async (values) => {
+    setLoading(true);
     try {
       await createClubMutation.mutateAsync(values);
       message.success('Club created successfully!');
@@ -17,6 +19,9 @@ const AddClub = () => {
     } catch (error) {
       message.error(error.response?.data?.message || 'Failed to create club');
       throw error;
+    }
+    finally {
+      setLoading(false);
     }
   };
 
@@ -35,7 +40,7 @@ const AddClub = () => {
         onCancel={() => setVisible(false)}
         onFinish={handleCreateClub}
         title="Add New Club"
-        loading={createClubMutation.isLoading}
+        loading={createClubMutation.isLoading || loading}
         isEdit={false}
       />
     </>

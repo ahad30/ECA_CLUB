@@ -15,6 +15,7 @@ const AddMember = () => {
   const [selectedStudents, setSelectedStudents] = useState([]);
   const [selectedClass, setSelectedClass] = useState(null);
   const [selectedSection, setSelectedSection] = useState(null);
+    const [loading, setLoading] = useState(false);
 
   // React Query hooks for data fetching with caching
   const { data: clubs = [], isLoading: clubsLoading } = useClubs();
@@ -82,6 +83,7 @@ const AddMember = () => {
       toast.error('Please select at least one student');
       return;
     }
+    setLoading(true);
 
     try {
       // Find the club object to get the _id
@@ -114,6 +116,8 @@ const AddMember = () => {
     } catch (error) {
       console.error('API error:', error);
       toast.error(error.response?.data?.message || 'Failed to create member record');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -280,7 +284,7 @@ const AddMember = () => {
               style={{ marginBottom: 8 }} 
               type="primary" 
               htmlType="submit" 
-              loading={submitLoading}
+              loading={submitLoading || loading}
             >
               Create Member Record
             </Button>
