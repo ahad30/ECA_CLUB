@@ -4,14 +4,15 @@ import { Spin } from "antd";
 import ProtectedRoute from "./ProtectedRoute";
 import { routesGenerator } from "../utils/routesGenerator";
 import { adminRoutes } from "./Admin.Routes";
+import Home from "../Pages/Home/Home";
+import Login from "../Pages/Login/Login";
+import Register from "../Pages/Register/Register";
+import MainLayout from "../Layout/MainLayout";
+import ErrorPage from "../components/ErrorPage/ErrorPage";
 
 
-const MainLayout = lazy(() => import("../Layout/MainLayout"));
 const DashboardLayout = lazy(() => import("../Layout/Dashboard/DashboardLayout"));
-const Home = lazy(() => import("../Pages/Home/Home"));
-const Login = lazy(() => import("../Pages/Login/Login"));
-const Register = lazy(() => import("../Pages/Register/Register"));
-const ErrorPage = lazy(() => import("../components/ErrorPage/ErrorPage"));
+
 
 
 const LoaderFallback = (
@@ -36,7 +37,7 @@ const withSuspense = (Component) => (
 export const routes = createBrowserRouter([
   {
     path: "/",
-    element: withSuspense(<MainLayout />),
+    element: <MainLayout />,
     errorElement:<ErrorPage />,
     children: [
       {

@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import DashboardSidebarTwo from "./DashboardSidebarTwo";
+import DashboardSidebar from "./DashboardSidebar";
 import { useState } from "react";
 import Navbar from "./Navbar";
 
@@ -8,18 +8,18 @@ const DashboardLayout = () => {
   return (
     <div className="flex max-w-full mx-auto">
       <div className="hidden  lg:block">
-        <DashboardSidebarTwo></DashboardSidebarTwo>
+        <DashboardSidebar></DashboardSidebar>
       </div>
 
       {/* for mobile */}
       <div className="lg:hidden">
-        <DashboardSidebarTwo
+        <DashboardSidebar
           className={`absolute duration-700 ${
             isSidebarOpen ? "" : "-ml-[500px]"
           }`}
           isSidebarOpen={isSidebarOpen}
           setIsSidebarOpen={setIsSidebarOpen}
-        ></DashboardSidebarTwo>
+        ></DashboardSidebar>
       </div>
 
       <div className="relative scrollbar-0 h-screen overflow-y-scroll w-full">
