@@ -13,7 +13,7 @@ const Login = lazy(() => import("../Pages/Login/Login"));
 const Register = lazy(() => import("../Pages/Register/Register"));
 const ErrorPage = lazy(() => import("../components/ErrorPage/ErrorPage"));
 
-// ✅ Reusable fallback loader
+
 const LoaderFallback = (
   <div style={{
     display: "flex",
@@ -26,7 +26,7 @@ const LoaderFallback = (
   </div>
 );
 
-// ✅ Suspense wrapper function for each route
+
 const withSuspense = (Component) => (
   <Suspense fallback={LoaderFallback}>
     {Component}
@@ -37,23 +37,23 @@ export const routes = createBrowserRouter([
   {
     path: "/",
     element: withSuspense(<MainLayout />),
-    errorElement: withSuspense(<ErrorPage />),
+    errorElement:<ErrorPage />,
     children: [
       {
         path: "/",
-        element: withSuspense(
+        element: 
           <ProtectedRoute>
             <Home />
           </ProtectedRoute>
-        ),
+ 
       },
       {
         path: "/login",
-        element: withSuspense(<Login />),
+        element: <Login />,
       },
       {
         path: "/register",
-        element: withSuspense(<Register />),
+        element: <Register />,
       },
     ],
   },
@@ -64,7 +64,7 @@ export const routes = createBrowserRouter([
         <DashboardLayout />
       </ProtectedRoute>
     ),
-    errorElement: withSuspense(<ErrorPage />),
+    errorElement: <ErrorPage />,
     children: routesGenerator(adminRoutes),
   },
 ]);
