@@ -25,6 +25,30 @@ export const useCreateClub = () => {
   });
 };
 
+export const useUpdateClub = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: ({ id, data }) => clubAPI.updateClub(id, data),
+    onSuccess: () => {
+      // Invalidate and automatically refetch clubs query after successful update
+      queryClient.invalidateQueries({ queryKey: ['clubs'] });
+    },
+  });
+};
+
+export const useDeleteClub = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: clubAPI.deleteClub,
+    onSuccess: () => {
+      // Invalidate and automatically refetch clubs query after successful deletion
+      queryClient.invalidateQueries({ queryKey: ['clubs'] });
+    },
+  });
+};
+
 // Members hooks
 export const useMembers = (filters = {}) => {
   return useQuery({
