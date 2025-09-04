@@ -4,6 +4,7 @@ import { PlusOutlined } from '@ant-design/icons';
 
 import { useCreateClub } from '../../../hooks/useApiData';
 import ReusableModal from '../../../components/Modal/Modal';
+import { toast } from 'sonner';
 
 const AddClub = () => {
   const [visible, setVisible] = useState(false);
@@ -17,7 +18,7 @@ const AddClub = () => {
       message.success('Club created successfully!');
       setVisible(false);
     } catch (error) {
-      message.error(error.response?.data?.message || 'Failed to create club');
+      toast.error(error.response?.data?.message || 'Failed to create club');
       throw error;
     }
     finally {
