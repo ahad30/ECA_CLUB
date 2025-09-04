@@ -65,9 +65,6 @@ export const routes = createBrowserRouter([
       </ProtectedRoute>
     ),
     errorElement: withSuspense(<ErrorPage />),
-    children: routesGenerator(adminRoutes).map((route) => ({
-      ...route,
-      element: withSuspense(route.element),
-    })),
+    children: routesGenerator(adminRoutes),
   },
 ]);
