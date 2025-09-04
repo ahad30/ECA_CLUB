@@ -1,47 +1,73 @@
 import { createBrowserRouter } from "react-router-dom";
-import Login from "../Pages/Login/Login";
-import Register from "../Pages/Register/Register";
-import MainLayout from "../Layout/MainLayout";
-import ErrorPage from "../components/ErrorPage/ErrorPage";
-import Home from "../Pages/Home/Home";
+import { Suspense, lazy } from "react";
+import { Spin } from "antd";
 import ProtectedRoute from "./ProtectedRoute";
 import { routesGenerator } from "../utils/routesGenerator";
 import { adminRoutes } from "./Admin.Routes";
-import DashboardLayout from "../Layout/Dashboard/DashboardLayout";
 
+// ✅ Lazy load your pages
+const MainLayout = lazy(() => import("../Layout/MainLayout"));
+const DashboardLayout = lazy(() => import("../Layout/Dashboard/DashboardLayout"));
+const Home = lazy(() => import("../Pages/Home/Home"));
+const Login = lazy(() => import("../Pages/Login/Login"));
+const Register = lazy(() => import("../Pages/Register/Register"));
+const ErrorPage = lazy(() => import("../components/ErrorPage/ErrorPage"));
+
+// ✅ Reusable fallback loader
+const LoaderFallback = (
+  <div style={{
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100vh",
+    width: "100vw"
+  }}>
+    <Spin size="large" />
+  </div>
+);
+
+// ✅ Suspense wrapper function for each route
+const withSuspense = (Component) => (
+  <Suspense fallback={LoaderFallback}>
+    {Component}
+  </Suspense>
+);
 
 export const routes = createBrowserRouter([
-     
-     {
-      path: "/",
-      element: <MainLayout/>,
-      errorElement: <ErrorPage/>,
-      children:[
-         {
+  {
+    path: "/",
+    element: withSuspense(<MainLayout />),
+    errorElement: withSuspense(<ErrorPage />),
+    children: [
+      {
         path: "/",
-        element: <ProtectedRoute><Home /></ProtectedRoute>,
-        },
-         {
+        element: withSuspense(
+          <ProtectedRoute>
+            <Home />
+          </ProtectedRoute>
+        ),
+      },
+      {
         path: "/login",
-        element: <Login />,
+        element: withSuspense(<Login />),
       },
       {
         path: "/register",
-        element: <Register />,
+        element: withSuspense(<Register />),
       },
-      ]
-     },
-
-       {
-    path: "/admin",
-    element: (
-     <ProtectedRoute>
-        <DashboardLayout />
-     </ProtectedRoute>
- 
-    ),
-    errorElement: <ErrorPage/>,
-    children: routesGenerator(adminRoutes),
+    ],
   },
-      
+  {
+    path: "/admin",
+    element: withSuspense(
+      <ProtectedRoute>
+        <DashboardLayout />
+      </ProtectedRoute>
+    ),
+    errorElement: withSuspense(<ErrorPage />),
+    children: routesGenerator(adminRoutes).map((route) => ({
+      ...route,
+      element: withSuspense(route.element),
+    })),
+  },
 ]);

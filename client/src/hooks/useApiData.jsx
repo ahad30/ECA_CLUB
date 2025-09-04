@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { clubAPI, eprAPI, memberAPI ,   } from '../services/api';
+import { clubAPI, eprAPI, memberAPI } from '../services/api';
 
 // Clubs hooks
 export const useClubs = () => {
@@ -100,6 +100,19 @@ export const useDeleteMember = () => {
   });
 };
 
+export const useClubStats = (clubId) => {
+  return useQuery({
+    queryKey: ['clubStats', clubId],
+    queryFn: async () => {
+      if (!clubId) return null;
+      const response = await memberAPI.getClubStats(clubId);
+      return response.data.data;
+    },
+    enabled: !!clubId, // Only fetch if clubId is provided
+    staleTime: 2 * 60 * 1000,
+  });
+};
+
 // EPR Data hooks (external APIs - cache longer)
 export const useClasses = () => {
   return useQuery({
@@ -134,16 +147,3 @@ export const useStudents = () => {
   });
 };
 
-// Club stats hook
-export const useClubStats = (clubId) => {
-  return useQuery({
-    queryKey: ['clubStats', clubId],
-    queryFn: async () => {
-      if (!clubId) return null;
-      const response = await memberAPI.getClubStats(clubId);
-      return response.data.data;
-    },
-    enabled: !!clubId, // Only fetch if clubId is provided
-    staleTime: 2 * 60 * 1000,
-  });
-};

@@ -8,7 +8,7 @@ import { useClubs, useDeleteClub } from '../../../hooks/useApiData';
 
 const Club = () => {
   // React Query hooks for data fetching with automatic caching and refetching
-  const { data: clubs = [], isLoading, refetch } = useClubs();
+  const { data: clubs = [], isLoading } = useClubs();
   const deleteClubMutation = useDeleteClub();
 
   const handleDeleteClub = async (clubId) => {
