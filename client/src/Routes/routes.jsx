@@ -5,7 +5,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import { routesGenerator } from "../utils/routesGenerator";
 import { adminRoutes } from "./Admin.Routes";
 
-// ✅ Lazy load your pages
+
 const MainLayout = lazy(() => import("../Layout/MainLayout"));
 const DashboardLayout = lazy(() => import("../Layout/Dashboard/DashboardLayout"));
 const Home = lazy(() => import("../Pages/Home/Home"));

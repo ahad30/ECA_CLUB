@@ -26,7 +26,7 @@ const Member = () => {
   const { data: clubs = [], isLoading: clubsLoading } = useClubs();
   const { data: classes = [], isLoading: classesLoading } = useClasses();
   const { data: sections = [], isLoading: sectionsLoading } = useSections();
-  const { data: stats } = useClubStats(filters.club);
+  const { data: stats , isLoading: statsLoading } = useClubStats(filters.club);
   const deleteMemberMutation = useDeleteMember();
 
 
@@ -151,16 +151,6 @@ const Member = () => {
       <Card 
         title="Member Management" 
         style={{ marginBottom: 16 }}
-        // extra={
-        //   <Button 
-        //     icon={<ReloadOutlined />} 
-        //     onClick={handleManualRefresh}
-        //     loading={membersLoading}
-        //     size="small"
-        //   >
-        //     Refresh
-        //   </Button>
-        // }
       >
         <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
           <Col xs={24} sm={12} md={8} lg={8}>
@@ -246,6 +236,7 @@ const Member = () => {
                 title="Total Students" 
                 value={stats.total_students} 
                 valueStyle={{ fontSize: '18px' }}
+                loading={statsLoading}
               />
             </Card>
           </Col>
@@ -255,6 +246,7 @@ const Member = () => {
                 title="Male Students" 
                 value={stats.total_male} 
                 valueStyle={{ fontSize: '18px' }}
+                loading={statsLoading}
               />
             </Card>
           </Col>
@@ -264,6 +256,7 @@ const Member = () => {
                 title="Female Students" 
                 value={stats.total_female} 
                 valueStyle={{ fontSize: '18px' }}
+                loading={statsLoading}
               />
             </Card>
           </Col>
@@ -273,6 +266,7 @@ const Member = () => {
                 title="Members Records" 
                 value={stats.total_members} 
                 valueStyle={{ fontSize: '18px' }}
+                loading={statsLoading}
               />
             </Card>
           </Col>
