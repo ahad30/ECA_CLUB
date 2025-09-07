@@ -31,6 +31,15 @@ api.interceptors.response.use(
   }
 );
 
+
+
+//User api methods
+export const userAPI = {
+  getUsers: () => api.get('/auth/me'),
+}
+
+
+
 // Club API methods
 export const clubAPI = {
   getClubs: () => api.get('/clubs'),
