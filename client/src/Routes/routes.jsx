@@ -60,11 +60,11 @@ export const routes = createBrowserRouter([
   },
   {
     path: "/admin",
-    element: withSuspense(
+    element: 
       <ProtectedRoute>
         <DashboardLayout />
       </ProtectedRoute>
-    ),
+    ,
     errorElement: <ErrorPage />,
     children: routesGenerator(adminRoutes),
   },
