@@ -18,27 +18,18 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// api.interceptors.response.use(
-//   (response) => response,
-//   (error) => {
-//     if (error.response?.status === 401 && 
-//         !error.config.url.includes('/auth/login') && 
-//         !error.config.url.includes('/auth/register')) {
-//       localStorage.removeItem('token');
-//       window.location.href = '/login';
-//     }
-//     return Promise.reject(error);
-//   }
-// );
-
-
-
-//User api methods
-export const userAPI = {
-  getUsers: () => api.get('/auth/me'),
-}
-
-
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401 && 
+        !error.config.url.includes('/auth/login') && 
+        !error.config.url.includes('/auth/register')) {
+      localStorage.removeItem('token');
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
 
 // Club API methods
 export const clubAPI = {

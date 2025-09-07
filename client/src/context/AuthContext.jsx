@@ -1,6 +1,5 @@
 import { createContext, useState, useContext, useEffect } from 'react';
 import api from '../services/api'; 
-import { useUser } from '../hooks/useApiData';
 
 const AuthContext = createContext();
 
@@ -10,17 +9,30 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-    const { data: users = {} , isLoading } = useUser();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      setUser(users);
-    } 
-  }, [users]);
+      fetchUser();
+    } else {
+      setLoading(false);
+    }
+  }, []);
 
-
+  const fetchUser = async () => {
+    try {
+      const res = await api.get('/auth/me');
+      setUser(res.data);
+    } catch (error) {
+      console.log(error);
+      localStorage.removeItem('token');
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const register = async (formData) => {
     try {
@@ -66,7 +78,7 @@ export const AuthProvider = ({ children }) => {
       return { success: false, error: message };
     }
   };
-              
+
   const logout = () => {
     localStorage.removeItem('token');
     setUser(null);
@@ -74,7 +86,7 @@ export const AuthProvider = ({ children }) => {
 
   const value = {
     user,
-    loading: isLoading,
+    loading,
     error,
     register,
     login,

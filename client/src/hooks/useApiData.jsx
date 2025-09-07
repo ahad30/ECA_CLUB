@@ -1,21 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { clubAPI, eprAPI, memberAPI, userAPI } from '../services/api';
-
-//user hooks
-
-export const useUser = () => {
-  return useQuery({
-    queryKey: ['users'],
-    queryFn: async () => {
-      const response = await userAPI.getUsers();
-      return response.data;
-    },
-    staleTime: 5 * 60 * 1000,
-  });
-};
-
-
-
+import { clubAPI, eprAPI, memberAPI } from '../services/api';
 
 // Clubs hooks
 export const useClubs = () => {
