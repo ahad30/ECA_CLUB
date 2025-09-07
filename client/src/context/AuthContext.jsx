@@ -13,11 +13,9 @@ export const AuthProvider = ({ children }) => {
   const [error, setError] = useState('');
     const { data: users = {} , isLoading } = useUser();
 
-    console.log(users)
   useEffect(() => {
     const token = localStorage.getItem('token');
-
-    if (token && users) {
+    if (token) {
       setUser(users);
     } 
   }, [users]);
