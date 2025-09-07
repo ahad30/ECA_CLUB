@@ -68,7 +68,7 @@ export const AuthProvider = ({ children }) => {
       return { success: false, error: message };
     }
   };
-
+              
   const logout = () => {
     localStorage.removeItem('token');
     setUser(null);
