@@ -25,8 +25,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const res = await api.get('/auth/me');
       setUser(res.data);
-    } catch (error) {
-      console.log(error)
+    } catch {
       localStorage.removeItem('token');
     } finally {
       setLoading(false);
@@ -42,8 +41,6 @@ const register = async (formData) => {
     setUser(userData);
     return { success: true };
   } catch (error) {
-    console.log(error);
-
     let message = 'Registration failed';
 
     if (error?.response?.data?.errors) {
@@ -65,7 +62,6 @@ const login = async (formData) => {
     setUser(userData);
     return { success: true };
   } catch (error) {
-    console.log(error);
     let message = 'Login failed';
 
     if (error?.response?.data?.errors) {

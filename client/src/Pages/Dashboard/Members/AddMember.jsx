@@ -128,17 +128,9 @@ const AddMember = () => {
 
     setSubmitLoading(true);
     try {
-      // Find the club object to get the _id
-      const selectedClub = clubs.find(club => club.name === values.club);
-      
-      if (!selectedClub) {
-        message.error('Selected club not found');
-        return;
-      }
-
       // Prepare the payload according to API requirements
       const payload = {
-        club: selectedClub._id, // Send the _id instead of name
+        club: values.club, // club value is already the _id
         class_std: values.class_std,
         section: values.section,
         students: selectedStudents.map(student => ({
@@ -148,15 +140,10 @@ const AddMember = () => {
         }))
       };
 
-      console.log('Submitting payload:', payload);
-      
-      const response = await memberAPI.createMember(payload);
-      console.log('API response:', response);
-      
+      await memberAPI.createMember(payload);
       message.success('Member record created successfully');
       navigate('/admin/member');
     } catch (error) {
-      console.error('API error:', error);
       message.error(error.response?.data?.message || 'Failed to create member record');
     } finally {
       setSubmitLoading(false);
@@ -192,7 +179,7 @@ const AddMember = () => {
                 notFoundContent={clubsLoading ? <Spin size="small" /> : "No clubs found"}
               >
                 {clubs.map(club => (
-                  <Option key={club._id} value={club.name}>
+                  <Option key={club._id} value={club._id}>
                     {club.name}
                   </Option>
                 ))}

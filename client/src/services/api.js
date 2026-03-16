@@ -52,11 +52,20 @@ export const memberAPI = {
     api.get(`/members/check-student/${clubId}/${studentId}`)
 };
 
+const getCurrentSession = () => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  // Academic year starts in July/August; if before July use previous year
+  const startYear = month >= 7 ? year : year - 1;
+  return `${startYear}-${startYear + 1}`;
+};
+
 // EPR API methods (external)
 export const eprAPI = {
-  getClasses: () => eprApi.post('/getClass' , {session: '2025-2026'}),
-  getSections: () => eprApi.post('/getSection' , {session: '2025-2026'}),
-  getStudents: () => eprApi.post('/fetchAdmittedStudents', {session: '2025-2026'})
+  getClasses: () => eprApi.post('/getClass', { session: getCurrentSession() }),
+  getSections: () => eprApi.post('/getSection', { session: getCurrentSession() }),
+  getStudents: () => eprApi.post('/fetchAdmittedStudents', { session: getCurrentSession() })
 };
 
 export default api;

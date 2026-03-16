@@ -1,18 +1,11 @@
-import { Link } from "react-router-dom";
-
 const Footer = () => {
+  const currentYear = new Date().getFullYear();
+
   return (
-        <div className='bg-black py-2 lg:py-3 text-white'>
-      <div className='px-2 max-w-6xl mx-auto flex justify-center items-center'>
-        <div>
-          <Link to={"/"}>
-            <h1 className='text-sm md:text-lg font-bold uppercase'>@copyright reserves Comment System Web App 2025</h1>
-          </Link>
-        </div>
+    <footer className="bg-[#121C34] text-[#E0E0E0] text-center py-4 text-sm mt-auto">
+      <p>&copy; {currentYear} ECA Club Management System. All rights reserved.</p>
+    </footer>
+  );
+};
 
-      </div>
-    </div>
-  )
-}
-
-export default Footer
+export default Footer;

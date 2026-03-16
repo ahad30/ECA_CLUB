@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const auth = require('../middleware/auth');
 const {
   getMembers,
   getMember,
@@ -10,25 +11,12 @@ const {
   checkStudentEligibility
 } = require('../controllers/member');
 
-// GET /api/members - Get all members with optional filtering
-router.get('/members', getMembers);
-
-// GET /api/members/stats/:clubId - Get club statistics
-router.get('/members/stats/:clubId', getClubStats);
-
-// GET /api/members/check-student/:clubId/:studentId - Check student eligibility
-router.get('/members/check-student/:clubId/:studentId', checkStudentEligibility);
-
-// GET /api/members/:id - Get single member
-router.get('/members/:id', getMember);
-
-// POST /api/members - Create new member record
-router.post('/members', createMember);
-
-// PUT /api/members/:id - Update member record
-router.put('/members/:id', updateMember);
-
-// DELETE /api/members/:id - Delete member record
-router.delete('/members/:id', deleteMember);
+router.get('/members', auth, getMembers);
+router.get('/members/stats/:clubId', auth, getClubStats);
+router.get('/members/check-student/:clubId/:studentId', auth, checkStudentEligibility);
+router.get('/members/:id', auth, getMember);
+router.post('/members', auth, createMember);
+router.put('/members/:id', auth, updateMember);
+router.delete('/members/:id', auth, deleteMember);
 
 module.exports = router;

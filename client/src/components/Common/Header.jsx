@@ -14,7 +14,7 @@ const Header = () => {
   return (
     <nav className="bg-blue-600 text-white p-4 shadow-md">
       <div className="container mx-auto flex justify-between items-center">
-        <Link to="/" className="text-xl font-bold">Comment System</Link>
+        <Link to="/" className="text-xl font-bold">ECA Club Management</Link>
         <div className="flex items-center space-x-4">
           {user ? (
             <>

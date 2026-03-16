@@ -22,8 +22,7 @@ const Club = () => {
       const response = await clubAPI.getClubs();
       setClubs(response?.data?.data);
     } catch (error) {
-      console.log(error)
-      message.error('Failed to fetch clubs');
+      message.error(error.response?.data?.message || 'Failed to fetch clubs');
     } finally {
       setLoading(false);
     }

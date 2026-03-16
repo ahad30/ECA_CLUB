@@ -147,14 +147,14 @@ const Member = () => {
           >
             View
           </Button>
-          {/* <Button
+          <Button
             type="link"
             icon={<EditOutlined />}
             onClick={() => navigate(`/admin/members/edit-member/${record._id}`)}
             style={{ padding: 0 }}
           >
             Edit
-          </Button> */}
+          </Button>
           <Popconfirm
             title="Delete Member Record"
             description="Are you sure you want to delete this member record?"
