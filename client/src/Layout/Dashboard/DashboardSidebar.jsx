@@ -7,7 +7,7 @@ import { MdOutlineKeyboardArrowRight } from "react-icons/md";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { IoIosArrowDropleftCircle } from "react-icons/io";
 
-const DashboardSidebarTwo = ({ className, setIsSidebarOpen }) => {
+const DashboardSidebar = ({ className, setIsSidebarOpen }) => {
   const [open, setOpen] = useState("");
 
   const handleOpen = (value) => {
@@ -128,4 +128,4 @@ const DashboardSidebarTwo = ({ className, setIsSidebarOpen }) => {
   );
 };
 
-export default DashboardSidebarTwo;
+export default DashboardSidebar;

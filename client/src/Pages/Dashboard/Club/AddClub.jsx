@@ -2,25 +2,26 @@ import React, { useState } from 'react';
 import { Button, message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
-import { clubAPI } from '../../../services/api';
+import { useCreateClub } from '../../../hooks/useApiData';
 import ReusableModal from '../../../components/Modal/Modal';
+import { toast } from 'sonner';
 
-
-const AddClub = ({ onClubAdded }) => {
+const AddClub = () => {
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+  const createClubMutation = useCreateClub();
 
   const handleCreateClub = async (values) => {
     setLoading(true);
     try {
-      const response = await clubAPI.createClub(values);
-      onClubAdded(response.data.data);
+      await createClubMutation.mutateAsync(values);
       message.success('Club created successfully!');
       setVisible(false);
     } catch (error) {
-      message.error(error.response?.data?.message || 'Failed to create club');
+      toast.error(error.response?.data?.message || 'Failed to create club');
       throw error;
-    } finally {
+    }
+    finally {
       setLoading(false);
     }
   };
@@ -40,7 +41,7 @@ const AddClub = ({ onClubAdded }) => {
         onCancel={() => setVisible(false)}
         onFinish={handleCreateClub}
         title="Add New Club"
-        loading={loading}
+        loading={createClubMutation.isLoading || loading}
         isEdit={false}
       />
     </>

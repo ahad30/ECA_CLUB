@@ -1,52 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import { Table, Button, Space, message, Popconfirm } from 'antd';
+import React from 'react';
+import { Table, Button, Space, Popconfirm } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
-
 import AddClub from './AddClub';
 import EditClub from './EditClub';
-
 import DashboardTable from '../../../components/Dashboard/Table/DashboardTable';
-import { clubAPI } from '../../../services/api';
+import { useClubs, useDeleteClub } from '../../../hooks/useApiData';
+import { toast } from 'sonner';
 
 const Club = () => {
-  const [clubs, setClubs] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    fetchClubs();
-  }, []);
-
-  const fetchClubs = async () => {
-    setLoading(true);
-    try {
-      const response = await clubAPI.getClubs();
-      setClubs(response?.data?.data);
-    } catch (error) {
-      message.error(error.response?.data?.message || 'Failed to fetch clubs');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { data: clubs = [], isLoading } = useClubs();
+  const deleteClubMutation = useDeleteClub();
 
   const handleDeleteClub = async (clubId) => {
     try {
-      await clubAPI.deleteClub(clubId);
-      setClubs(clubs.filter(club => club._id !== clubId));
-      message.success('Club deleted successfully');
+      await deleteClubMutation.mutateAsync(clubId);
+      toast.success('Club deleted successfully');
+      // No need to manually update state - React Query will automatically refetch
     } catch (error) {
-      message.error(error.response?.data?.message || 'Failed to delete club');
+      toast.error(error.response?.data?.message || 'Failed to delete club');
     }
   };
 
-  const handleClubAdded = (newClub) => {
-    setClubs([...clubs, newClub]);
-  };
-
-  const handleClubUpdated = (updatedClub) => {
-    setClubs(clubs.map(club => 
-      club._id === updatedClub._id ? updatedClub : club
-    ));
-  };
+  // No need for handleClubAdded and handleClubUpdated since React Query
+  // will automatically refetch the data after mutations
 
   const columns = [
     {
@@ -67,7 +43,7 @@ const Club = () => {
       key: 'actions',
       render: (_, record) => (
         <Space size="middle">
-          <EditClub club={record} onClubUpdated={handleClubUpdated} />
+          <EditClub club={record} />
           
           <Popconfirm
             title="Delete Club"
@@ -81,6 +57,7 @@ const Club = () => {
               danger
               icon={<DeleteOutlined />}
               style={{ padding: 0 }}
+              loading={deleteClubMutation.isLoading}
             >
               Delete
             </Button>
@@ -93,13 +70,13 @@ const Club = () => {
   return (
     <div>
       <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'flex-end' }}>
-        <AddClub onClubAdded={handleClubAdded} />
+        <AddClub />
       </div>
 
       <DashboardTable
         columns={columns}
         data={clubs.map(club => ({ ...club, key: club._id }))}
-        loading={loading}
+        loading={isLoading}
       />
     </div>
   );

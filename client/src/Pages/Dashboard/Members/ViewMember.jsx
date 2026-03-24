@@ -110,7 +110,6 @@ const ViewMember = () => {
         <Title level={4} style={{ margin: 0 }}>Member Record Details</Title>
       </div>
 
-      {/* Stats Cards */}
       <Row gutter={16} className="mb-4">
         <Col xs={24} sm={12} lg={6}>
           <Card>
@@ -154,7 +153,6 @@ const ViewMember = () => {
         </Col>
       </Row>
 
-      {/* Member Info */}
       <Card title="Record Information" className="mb-4">
         <Descriptions bordered column={{ xs: 1, sm: 2, lg: 3 }}>
           <Descriptions.Item label="Club">
@@ -179,7 +177,6 @@ const ViewMember = () => {
 
       <Divider />
 
-      {/* Students Table */}
       <Card
         title={
           <div className="flex items-center gap-2">

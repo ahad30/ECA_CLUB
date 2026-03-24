@@ -37,7 +37,7 @@ const ReusableModal = ({
       open={visible}
       onCancel={onCancel}
       footer={null}
-      destroyOnClose
+      destroyOnHidden
     >
       <Form
         form={form}

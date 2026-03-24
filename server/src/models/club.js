@@ -12,7 +12,5 @@ const clubSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Index for better performance on name queries
-clubSchema.index({ name: 1 });
 
 module.exports = mongoose.model('Club', clubSchema);

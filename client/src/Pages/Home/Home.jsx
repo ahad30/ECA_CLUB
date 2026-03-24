@@ -45,7 +45,6 @@ const Home = () => {
   const totalMale = members.reduce((sum, m) => sum + m.total_male_count, 0);
   const totalFemale = members.reduce((sum, m) => sum + m.total_female_count, 0);
 
-  // Per-club stats
   const clubStatsMap = members.reduce((acc, m) => {
     const clubId = m.club?._id;
     const clubName = m.club?.name || 'Unknown';
@@ -110,7 +109,6 @@ const Home = () => {
 
   return (
     <div>
-      {/* Welcome Banner */}
       <div className="mb-6 p-6 rounded-xl bg-gradient-to-r from-[#121C34] to-[#1b3a9a] text-white shadow-md">
         <Title level={3} style={{ color: '#fff', margin: 0 }}>
           Welcome back, {user?.username} 👋
@@ -120,7 +118,6 @@ const Home = () => {
         </Text>
       </div>
 
-      {/* Summary Stats */}
       <Row gutter={[16, 16]} className="mb-6">
         <Col xs={24} sm={12} lg={6}>
           <Card
@@ -173,7 +170,6 @@ const Home = () => {
       </Row>
 
       <Row gutter={[16, 16]}>
-        {/* Club Enrollment Breakdown */}
         <Col xs={24} lg={10}>
           <Card title="Enrollment by Club" style={{ minHeight: 340 }}>
             {clubStatsList.length === 0 ? (
@@ -191,7 +187,7 @@ const Home = () => {
                     </Text>
                   </div>
                   <Progress
-                    percent={Math.round((club.students / (48)) * 100)}
+                    percent={Math.round((club.students / 48) * 100)}
                     strokeColor={{
                       '0%': '#1677ff',
                       '100%': '#eb2f96',
@@ -205,7 +201,6 @@ const Home = () => {
           </Card>
         </Col>
 
-        {/* Recent Member Records */}
         <Col xs={24} lg={14}>
           <Card
             title="Recent Member Records"
