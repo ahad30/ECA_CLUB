@@ -1,44 +1,46 @@
+import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import DashboardSidebar from "./DashboardSidebar";
-import { useState } from "react";
 import Navbar from "./Navbar";
 
 const DashboardLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  return (
-    <div className="flex max-w-full mx-auto">
-      <div className="hidden  lg:block">
-        <DashboardSidebar></DashboardSidebar>
-      </div>
 
-      {/* for mobile */}
-      <div className="lg:hidden">
-        <DashboardSidebar
-          className={`absolute duration-700 ${
-            isSidebarOpen ? "" : "-ml-[500px]"
-          }`}
+  return (
+    <div className="flex h-screen bg-slate-50 overflow-hidden">
+
+      {/* Desktop Sidebar */}
+      <aside className="hidden lg:flex flex-shrink-0">
+        <DashboardSidebar />
+      </aside>
+
+      {/* Mobile Sidebar Overlay */}
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 z-10 bg-black/50 lg:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
+      {/* Mobile Sidebar Drawer */}
+      <aside
+        className={`fixed top-0 left-0 z-20 lg:hidden transition-transform duration-300 ${
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <DashboardSidebar setIsSidebarOpen={setIsSidebarOpen} />
+      </aside>
+
+      {/* Main content area */}
+      <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
+        <Navbar
           isSidebarOpen={isSidebarOpen}
           setIsSidebarOpen={setIsSidebarOpen}
-        ></DashboardSidebar>
-      </div>
+        />
 
-      <div className="relative scrollbar-0 h-screen overflow-y-scroll w-full">
-        <div className="w-full text-gray-900">
-          <Navbar
-            isSidebarOpen={isSidebarOpen}
-            setIsSidebarOpen={setIsSidebarOpen}
-          ></Navbar>
-        </div>
-        <div
-          onClick={() => {
-            if (isSidebarOpen) {
-              setIsSidebarOpen(false);
-            }
-          }}
-          className=" py-12 bg-[#F3F5F7] px-5 w-full"
-        >
-          <Outlet></Outlet>
-        </div>
+        <main className="flex-1 overflow-y-auto scrollbar-0 bg-slate-50 px-4 sm:px-6 py-6">
+          <Outlet />
+        </main>
       </div>
     </div>
   );

@@ -1,11 +1,12 @@
-import React from 'react';
-import { Table, Button, Space, Popconfirm } from 'antd';
-import { DeleteOutlined } from '@ant-design/icons';
+import { Button, Space, Popconfirm, Tag, Typography } from 'antd';
+import { DeleteOutlined, TrophyOutlined } from '@ant-design/icons';
 import AddClub from './AddClub';
 import EditClub from './EditClub';
 import DashboardTable from '../../../components/Dashboard/Table/DashboardTable';
 import { useClubs, useDeleteClub } from '../../../hooks/useApiData';
 import { toast } from 'sonner';
+
+const { Title, Text } = Typography;
 
 const Club = () => {
   const { data: clubs = [], isLoading } = useClubs();
@@ -15,48 +16,67 @@ const Club = () => {
     try {
       await deleteClubMutation.mutateAsync(clubId);
       toast.success('Club deleted successfully');
-      // No need to manually update state - React Query will automatically refetch
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to delete club');
     }
   };
 
-  // No need for handleClubAdded and handleClubUpdated since React Query
-  // will automatically refetch the data after mutations
-
   const columns = [
+    {
+      title: '#',
+      key: 'index',
+      width: 55,
+      render: (_, __, i) => (
+        <span className="text-gray-400 text-xs font-medium">{i + 1}</span>
+      ),
+    },
     {
       title: 'Club Name',
       dataIndex: 'name',
       key: 'name',
       sorter: (a, b) => a.name.localeCompare(b.name),
+      render: (name) => (
+        <div className="flex items-center gap-2">
+          <div className="w-7 h-7 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+            <TrophyOutlined className="text-blue-600 text-xs" />
+          </div>
+          <span className="font-medium text-gray-800">{name}</span>
+        </div>
+      ),
     },
     {
       title: 'Created At',
       dataIndex: 'createdAt',
       key: 'createdAt',
-      render: (date) => new Date(date).toLocaleDateString(),
       sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
+      render: (date) => (
+        <Tag color="default" style={{ borderRadius: 6 }}>
+          {new Date(date).toLocaleDateString('en-US', {
+            year: 'numeric', month: 'short', day: 'numeric'
+          })}
+        </Tag>
+      ),
     },
     {
       title: 'Actions',
       key: 'actions',
+      width: 140,
       render: (_, record) => (
-        <Space size="middle">
+        <Space size="small">
           <EditClub club={record} />
-          
           <Popconfirm
             title="Delete Club"
-            description="Are you sure you want to delete this club?"
+            description="This will remove the club permanently."
             onConfirm={() => handleDeleteClub(record._id)}
-            okText="Yes"
-            cancelText="No"
+            okText="Delete"
+            okButtonProps={{ danger: true }}
+            cancelText="Cancel"
           >
             <Button
-              type="link"
+              type="text"
               danger
               icon={<DeleteOutlined />}
-              style={{ padding: 0 }}
+              size="small"
               loading={deleteClubMutation.isLoading}
             >
               Delete
@@ -69,15 +89,27 @@ const Club = () => {
 
   return (
     <div>
-      <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'flex-end' }}>
+      {/* Page Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        <div>
+          <Title level={4} style={{ margin: 0, color: '#111827' }}>
+            Club Management
+          </Title>
+          <Text type="secondary" style={{ fontSize: 13 }}>
+            Manage all ECA clubs &mdash; {clubs.length} club{clubs.length !== 1 ? 's' : ''} registered
+          </Text>
+        </div>
         <AddClub />
       </div>
 
-      <DashboardTable
-        columns={columns}
-        data={clubs.map(club => ({ ...club, key: club._id }))}
-        loading={isLoading}
-      />
+      {/* Table Card */}
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <DashboardTable
+          columns={columns}
+          data={clubs.map((club) => ({ ...club, key: club._id }))}
+          loading={isLoading}
+        />
+      </div>
     </div>
   );
 };

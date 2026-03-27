@@ -1,107 +1,170 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-
-
-
-
-
+/* ── Base ───────────────────────────────────────────── */
 * {
-    font-family: "Poppins", sans-serif;
-  }
-
-
-
-
-
-
-  .wrapper::-webkit-scrollbar {
-    width: 4px;
-    height: 5px;
-    background-color: #aaa;
-    /* or add it to the track */
-  
-  }
-  
-  /* Add a thumb */
-  .wrapper::-webkit-scrollbar-thumb {
-    background: #03A9F4;
-  }
-
-  /* Scrollber */
-
-  /* width */
-  .scrollbar-0::-webkit-scrollbar {
-    width: 5px;
-  }
-
-  /* Track */
-  .scrollbar-0::-webkit-scrollbar-track {
-    background: #f1f1f1;
-  }
-
-  /* Handle */
-  .scrollbar-0::-webkit-scrollbar-thumb {
-    background: #a7abe8;
-  }
-
-  /* Handle on hover */
-  .scrollbar-0::-webkit-scrollbar-thumb:hover {
-    background: #555;
-  }
-
-
-
-
-/* styles.css */
-.thin-scrollbar::-webkit-scrollbar {
-  width: 0; /* Adjust this value to make the scrollbar thinner or thicker */
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-.thin-scrollbar::-webkit-scrollbar-track {
-  background: white; /* Optional: Track color */
+/* ── Scrollbars ─────────────────────────────────────── */
+.scrollbar-0::-webkit-scrollbar { width: 4px; }
+.scrollbar-0::-webkit-scrollbar-track { background: #f1f5f9; }
+.scrollbar-0::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 99px; }
+.scrollbar-0::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+.thin-scrollbar::-webkit-scrollbar { width: 0; }
+
+/* ── Loader ─────────────────────────────────────────── */
+.loader {
+  width: 36px;
+  height: 36px;
+  border: 3px solid #dbeafe;
+  border-top-color: #2563eb;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Ant Design – Table ─────────────────────────────── */
+.ant-table-wrapper .ant-table-thead > tr > th,
+.ant-table-wrapper .ant-table-thead > tr > td {
+  background-color: #f8fafc !important;
+  color: #475569 !important;
+  font-weight: 600 !important;
+  font-size: 12px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
+  border-bottom: 2px solid #e2e8f0 !important;
 }
 
-.thin-scrollbar::-webkit-scrollbar-thumb {
-  background: #ffffff; /* Optional: Thumb color */
-  border-radius: 0px; /* Optional: Round corners */
+.ant-table-wrapper .ant-table-tbody > tr > td {
+  border-bottom: 1px solid #f1f5f9 !important;
+  padding: 12px 16px !important;
+  color: #374151;
 }
 
-.thin-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #ffffff; /* Optional: Thumb color on hover */
+.ant-table-wrapper .ant-table-tbody > tr:hover > td {
+  background-color: #f8fafc !important;
 }
 
-
-
-
-
-/* ant table style */
-.ant-table-thead > tr > th {
-  background-color: #3b6fdf !important;
-  color: white !important;
-  /* border: none !important; */
+.ant-table-wrapper .ant-table-tbody > tr:last-child > td {
+  border-bottom: none !important;
 }
 
-  .ant-table-cell {
-    text-align: center;
-  }
-  
-  .ant-table-thead > tr > th,
-  .ant-table-tbody > tr > td {
-    text-align: center !important;
-  }
-/* ant table style */
+.ant-table-wrapper .ant-table {
+  border-radius: 0 !important;
+}
 
+.ant-table-cell {
+  text-align: left !important;
+}
 
+.ant-table-thead > tr > th,
+.ant-table-tbody > tr > td {
+  text-align: left !important;
+}
 
+/* ── Ant Design – Cards ─────────────────────────────── */
+.ant-card {
+  border-radius: 12px !important;
+}
 
+.ant-card-head {
+  border-bottom: 1px solid #f1f5f9 !important;
+  padding: 16px 20px !important;
+  min-height: auto !important;
+}
 
+.ant-card-head-title {
+  font-weight: 600 !important;
+  color: #111827 !important;
+  font-size: 14px !important;
+}
 
+.ant-card-body {
+  padding: 20px !important;
+}
 
+/* ── Ant Design – Buttons ───────────────────────────── */
+.ant-btn-primary {
+  background-color: #2563eb !important;
+  border-color: #2563eb !important;
+}
+.ant-btn-primary:hover {
+  background-color: #1d4ed8 !important;
+  border-color: #1d4ed8 !important;
+}
 
+/* ── Ant Design – Modals ────────────────────────────── */
+.ant-modal-content {
+  border-radius: 14px !important;
+  overflow: hidden;
+}
 
+.ant-modal-header {
+  border-bottom: 1px solid #f1f5f9 !important;
+  padding: 16px 24px !important;
+}
 
+/* ── Ant Design – Select ────────────────────────────── */
+.ant-select-selector {
+  border-radius: 8px !important;
+}
+
+/* ── Ant Design – Descriptions ──────────────────────── */
+.ant-descriptions-item-label {
+  font-weight: 600 !important;
+  color: #6b7280 !important;
+  background: #f9fafb !important;
+}
+
+/* ── Ant Design – Progress ──────────────────────────── */
+.ant-progress-line {
+  margin-bottom: 0 !important;
+}
+
+/* ── Ant Design – Statistic ─────────────────────────── */
+.ant-statistic-title {
+  font-size: 12px !important;
+  color: #6b7280 !important;
+  font-weight: 500 !important;
+}
+
+.ant-statistic-content {
+  font-weight: 700 !important;
+}
+
+/* ── Ant Design – Form ──────────────────────────────── */
+.ant-form-item-label > label {
+  font-weight: 500 !important;
+  color: #374151 !important;
+  font-size: 13px !important;
+}
+
+/* ── Ant Design – Tags ──────────────────────────────── */
+.ant-tag {
+  border-radius: 20px !important;
+  font-size: 12px !important;
+  padding: 2px 10px !important;
+}
+
+/* ── Ant Design – Popconfirm / Tooltip ──────────────── */
+.ant-popconfirm .ant-popover-inner {
+  border-radius: 10px !important;
+}
+
+/* ── Ant Design – Pagination ────────────────────────── */
+.ant-pagination-item-active {
+  border-color: #2563eb !important;
+}
+.ant-pagination-item-active a {
+  color: #2563eb !important;
+}
+
+/* ── Utilities ──────────────────────────────────────── */
+.page-header {
+  @apply flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6;
+}
